@@ -1171,5 +1171,5 @@ async def on_message(message):
     await text.delete()
     await message.channel.send(embed=embedVar)
 
-TOKEN="Insert Toekn Here"
+TOKEN="Insert Token Here"
 client.run(TOKEN)
