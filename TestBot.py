@@ -3,142 +3,151 @@ import discord
 import requests
 from bs4 import BeautifulSoup
 import firebase_admin
+from firebase_admin import credentials
 from firebase_admin import db
 import re
 import random
+from datetime import date
 import json
 import time
 import unidecode
 import difflib
 
 cred_obj1 = firebase_admin.credentials.Certificate('FB_json.json')
-app1 = firebase_admin.initialize_app(cred_obj1, {'databaseURL':'Insert database URL here'})
+app1 = firebase_admin.initialize_app(cred_obj1, {'databaseURL':'https://test2-b4778-default-rtdb.firebaseio.com/'})
 ref1=db.reference('/')
 
 cred_obj2 = firebase_admin.credentials.Certificate('baseplayer.json')
-app2 = firebase_admin.initialize_app(cred_obj2, {'databaseURL':'Insert database URL here'}, name='app2')
+app2 = firebase_admin.initialize_app(cred_obj2, {'databaseURL':'https://base-player-database-default-rtdb.firebaseio.com/'}, name='app2')
 ref2=db.reference('/', app2)
 
 cred_obj3 = firebase_admin.credentials.Certificate('IM.json')
-app3 = firebase_admin.initialize_app(cred_obj3, {'databaseURL':'Insert database URL here'}, name='app3')
+app3 = firebase_admin.initialize_app(cred_obj3, {'databaseURL':'https://im-database-231bb-default-rtdb.firebaseio.com/'}, name='app3')
 ref3=db.reference('/', app3)
 
 cred_obj4 = firebase_admin.credentials.Certificate('legend.json')
-app4 = firebase_admin.initialize_app(cred_obj4, {'databaseURL':'Insert database URL here'}, name='app4')
+app4 = firebase_admin.initialize_app(cred_obj4, {'databaseURL':'https://legend-database-default-rtdb.firebaseio.com/'}, name='app4')
 ref4=db.reference('/', app4)
 
 cred_obj_a = firebase_admin.credentials.Certificate('manager-01.json')
-app_a = firebase_admin.initialize_app(cred_obj_a, {'databaseURL':'Insert database URL here'}, name='app_a')
+app_a = firebase_admin.initialize_app(cred_obj_a, {'databaseURL':'https://manager-01-8f694-default-rtdb.firebaseio.com/'}, name='app_a')
 ref_a=db.reference('/', app_a)
 
 cred_obj_b = firebase_admin.credentials.Certificate('manager-02.json')
-app_b = firebase_admin.initialize_app(cred_obj_b, {'databaseURL':'Insert database URL here'},name= 'app_b')
+app_b = firebase_admin.initialize_app(cred_obj_b, {'databaseURL':'https://manager-02-b9cf5-default-rtdb.firebaseio.com/'},name= 'app_b')
 ref_b=db.reference('/', app_b)
 
 cred_obj_c = firebase_admin.credentials.Certificate('manager-03.json')
-app_c = firebase_admin.initialize_app(cred_obj_c, {'databaseURL':'Insert database URL here'},name= 'app_c')
+app_c = firebase_admin.initialize_app(cred_obj_c, {'databaseURL':'https://manager-03-5df24-default-rtdb.firebaseio.com/'},name= 'app_c')
 ref_c=db.reference('/', app_c)
 
 cred_obj_d = firebase_admin.credentials.Certificate('manager-04.json')
-app_d = firebase_admin.initialize_app(cred_obj_d, {'databaseURL':'Insert database URL here'},name= 'app_d')
+app_d = firebase_admin.initialize_app(cred_obj_d, {'databaseURL':'https://manager-04-2da97-default-rtdb.firebaseio.com/'},name= 'app_d')
 ref_d=db.reference('/', app_d)
 
 cred_obj_e = firebase_admin.credentials.Certificate('manager-05.json')
-app_e = firebase_admin.initialize_app(cred_obj_e, {'databaseURL':'Insert database URL here'},name= 'app_e')
+app_e = firebase_admin.initialize_app(cred_obj_e, {'databaseURL':'https://manager-05-default-rtdb.firebaseio.com/'},name= 'app_e')
 ref_e=db.reference('/', app_e)
 
 cred_obj_f = firebase_admin.credentials.Certificate('manager-06.json')
-app_f = firebase_admin.initialize_app(cred_obj_f, {'databaseURL':'Insert database URL here'},name= 'app2_f')
+app_f = firebase_admin.initialize_app(cred_obj_f, {'databaseURL':'https://manager-06-default-rtdb.firebaseio.com/'},name= 'app2_f')
 ref_f=db.reference('/', app_f)
 
 cred_obj_g = firebase_admin.credentials.Certificate('manager-07.json')
-app_g = firebase_admin.initialize_app(cred_obj_g, {'databaseURL':'Insert database URL here'},name= 'app_g')
+app_g = firebase_admin.initialize_app(cred_obj_g, {'databaseURL':'https://manager-07-default-rtdb.firebaseio.com/'},name= 'app_g')
 ref_g=db.reference('/', app_g)
 
 cred_obj_h = firebase_admin.credentials.Certificate('manager-08.json')
-app_h = firebase_admin.initialize_app(cred_obj_h, {'databaseURL':'Insert database URL here'},name= 'app_h')
+app_h = firebase_admin.initialize_app(cred_obj_h, {'databaseURL':'https://manager-08-default-rtdb.firebaseio.com/'},name= 'app_h')
 ref_h=db.reference('/', app_h)
 
 cred_obj_i = firebase_admin.credentials.Certificate('manager-09.json')
-app_i = firebase_admin.initialize_app(cred_obj_i, {'databaseURL':'Insert database URL here'},name= 'app_i')
+app_i = firebase_admin.initialize_app(cred_obj_i, {'databaseURL':'https://manager-09-default-rtdb.firebaseio.com/'},name= 'app_i')
 ref_i=db.reference('/', app_i)
 
 cred_obj_j = firebase_admin.credentials.Certificate('manager-10.json')
-app_j = firebase_admin.initialize_app(cred_obj_j, {'databaseURL':'Insert database URL here'},name= 'app_j')
+app_j = firebase_admin.initialize_app(cred_obj_j, {'databaseURL':'https://manager-10-424ea-default-rtdb.firebaseio.com/'},name= 'app_j')
 ref_j=db.reference('/', app_j)
 
 cred_obj_k = firebase_admin.credentials.Certificate('manager-11.json')
-app_k = firebase_admin.initialize_app(cred_obj_k, {'databaseURL':'Insert database URL here'},name= 'app_k')
+app_k = firebase_admin.initialize_app(cred_obj_k, {'databaseURL':'https://manager-11-4eda6-default-rtdb.firebaseio.com/'},name= 'app_k')
 ref_k=db.reference('/', app_k)
 
 cred_obj_l = firebase_admin.credentials.Certificate('manager-12.json')
-app_l = firebase_admin.initialize_app(cred_obj_l, {'databaseURL':'Insert database URL here'},name= 'app_l')
+app_l = firebase_admin.initialize_app(cred_obj_l, {'databaseURL':'https://manager-12-9cb36-default-rtdb.firebaseio.com/'},name= 'app_l')
 ref_l=db.reference('/', app_l)
 
 cred_obj_m = firebase_admin.credentials.Certificate('manager-13.json')
-app_m = firebase_admin.initialize_app(cred_obj_m, {'databaseURL':'Insert database URL here'},name= 'app_m')
+app_m = firebase_admin.initialize_app(cred_obj_m, {'databaseURL':'https://manager-13-de784-default-rtdb.firebaseio.com/'},name= 'app_m')
 ref_m=db.reference('/', app_m)
 
 cred_obj_n = firebase_admin.credentials.Certificate('manager-14.json')
-app_n = firebase_admin.initialize_app(cred_obj_n, {'databaseURL':'Insert database URL here'},name= 'app_n')
+app_n = firebase_admin.initialize_app(cred_obj_n, {'databaseURL':'https://manager-14-default-rtdb.firebaseio.com/'},name= 'app_n')
 ref_n=db.reference('/', app_n)
 
 cred_obj_o = firebase_admin.credentials.Certificate('manager-15.json')
-app_o = firebase_admin.initialize_app(cred_obj_o, {'databaseURL':'Insert database URL here'},name= 'app_o')
+app_o = firebase_admin.initialize_app(cred_obj_o, {'databaseURL':'https://manager-15-default-rtdb.firebaseio.com/'},name= 'app_o')
 ref_o=db.reference('/', app_o)
 
 cred_obj_p = firebase_admin.credentials.Certificate('manager-16.json')
-app_p = firebase_admin.initialize_app(cred_obj_p, {'databaseURL':'Insert database URL here'},name= 'app_p')
+app_p = firebase_admin.initialize_app(cred_obj_p, {'databaseURL':'https://manager-16-default-rtdb.firebaseio.com/'},name= 'app_p')
 ref_p=db.reference('/', app_p)
 
 cred_obj_q = firebase_admin.credentials.Certificate('manager-17.json')
-app_q = firebase_admin.initialize_app(cred_obj_q, {'databaseURL':'Insert database URL here'},name= 'app_q')
+app_q = firebase_admin.initialize_app(cred_obj_q, {'databaseURL':'https://manager-17-b5338-default-rtdb.firebaseio.com/'},name= 'app_q')
 ref_q=db.reference('/', app_q)
 
 cred_obj_r = firebase_admin.credentials.Certificate('manager-18.json')
-app_r = firebase_admin.initialize_app(cred_obj_r, {'databaseURL':'Insert database URL here'},name= 'app_r')
+app_r = firebase_admin.initialize_app(cred_obj_r, {'databaseURL':'https://manager-18-default-rtdb.firebaseio.com/'},name= 'app_r')
 ref_r=db.reference('/', app_r)
 
 cred_obj_s = firebase_admin.credentials.Certificate('manager-19.json')
-app_s = firebase_admin.initialize_app(cred_obj_s, {'databaseURL':'Insert database URL here'},name= 'app_s')
+app_s = firebase_admin.initialize_app(cred_obj_s, {'databaseURL':'https://manager-19-default-rtdb.firebaseio.com/'},name= 'app_s')
 ref_s=db.reference('/', app_s)
 
 cred_obj_t = firebase_admin.credentials.Certificate('manager-20.json')
-app_t = firebase_admin.initialize_app(cred_obj_t, {'databaseURL':'Insert database URL here'},name= 'app_t')
+app_t = firebase_admin.initialize_app(cred_obj_t, {'databaseURL':'https://manager-20-171d4-default-rtdb.firebaseio.com/'},name= 'app_t')
 ref_t=db.reference('/', app_t)
 
 cred_obj_u = firebase_admin.credentials.Certificate('manager-21.json')
-app_u = firebase_admin.initialize_app(cred_obj_u, {'databaseURL':'Insert database URL here'},name= 'app_u')
+app_u = firebase_admin.initialize_app(cred_obj_u, {'databaseURL':'https://manager-21-242e4-default-rtdb.firebaseio.com/'},name= 'app_u')
 ref_u=db.reference('/', app_u)
 
 cred_obj_v = firebase_admin.credentials.Certificate('manager-22.json')
-app_v = firebase_admin.initialize_app(cred_obj_v, {'databaseURL':'Insert database URL here'},name= 'app_v')
+app_v = firebase_admin.initialize_app(cred_obj_v, {'databaseURL':'https://manager-22-2254b-default-rtdb.firebaseio.com/'},name= 'app_v')
 ref_v=db.reference('/', app_v)
 
 cred_obj_w = firebase_admin.credentials.Certificate('manager-23.json')
-app_w = firebase_admin.initialize_app(cred_obj_w, {'databaseURL':'Insert database URL here'},name= 'app_w')
+app_w = firebase_admin.initialize_app(cred_obj_w, {'databaseURL':'https://manager-23-default-rtdb.firebaseio.com/'},name= 'app_w')
 ref_w=db.reference('/', app_w)
 
 cred_obj_x = firebase_admin.credentials.Certificate('manager-24.json')
-app_x = firebase_admin.initialize_app(cred_obj_x, {'databaseURL':'Insert database URL here'},name= 'app_x')
+app_x = firebase_admin.initialize_app(cred_obj_x, {'databaseURL':'https://manager-24-default-rtdb.firebaseio.com/'},name= 'app_x')
 ref_x=db.reference('/', app_x)
 
 cred_obj_y = firebase_admin.credentials.Certificate('manager-25.json')
-app_y = firebase_admin.initialize_app(cred_obj_y, {'databaseURL':'Insert database URL here'},name= 'app_y')
+app_y = firebase_admin.initialize_app(cred_obj_y, {'databaseURL':'https://manager-25-default-rtdb.firebaseio.com/'},name= 'app_y')
 ref_y=db.reference('/', app_y)
 
 cred_obj_z = firebase_admin.credentials.Certificate('manager-26.json')
-app_z = firebase_admin.initialize_app(cred_obj_z, {'databaseURL':'Insert database URL here'},name= 'app_z')
+app_z = firebase_admin.initialize_app(cred_obj_z, {'databaseURL':'https://manager-26-default-rtdb.firebaseio.com/'},name= 'app_z')
 ref_z=db.reference('/', app_z)
 
 cred_obj_backup= firebase_admin.credentials.Certificate('manager-27.json')
-app_backup = firebase_admin.initialize_app(cred_obj_backup, {'databaseURL':'Insert database URL here'}, name='app_backup')
+app_backup = firebase_admin.initialize_app(cred_obj_backup, {'databaseURL':'https://manager-27-default-rtdb.firebaseio.com/'}, name='app_backup')
 ref_backup=db.reference('/', app_backup)
 
 
 
 
 client = discord.Client()
+
+"""def mongo_setup():
+  connection_string="mongodb+srv://Bater:warmachinexerox69@cluster0.mytce.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+  client1 = MongoClient(connection_string)
+  db = client1[ "testdb" ] # makes a test database called "testdb"
+  col = db[ "testcol" ]
+  return col"""
 
 def first_letter(a):
   if(a in 'a'): temp_ref=ref_a
@@ -171,6 +180,12 @@ def first_letter(a):
   
   return temp_ref
   
+
+
+
+
+
+
 def convert(query):
   query=query.strip(' ')
   query=re.sub(' +', ' ', query)
@@ -557,8 +572,19 @@ async def on_ready():
 async def on_message(message):
   if message.author == client.user:
     return
+  if '  ' in message.content:
+      while '  ' in message.content:
+        message.content= message.content.replace('  ', ' ')
   message.content=message.content.lower().strip()
   message.content=unidecode.unidecode(message.content)
+  if client.user.mentioned_in(message):
+    print(message.content)
+    message.content=message.content.replace(f'<@{client.user.id}>', '').strip()
+    if '  ' in message.content:
+      while '  ' in message.content:
+        message.content= message.content.replace('  ', ' ')
+    print(message.content)
+    if('help' in message.content or len(message.content)==0): message.content='-peshelp'
   if(message.content.startswith('-manager')):
     name=message.content[9:]
     if(name.replace(' ','').replace('.','').isalpha()): 
@@ -947,6 +973,11 @@ async def on_message(message):
     description='To pack a random card, use -pull or -pack \n Example: **-pack** \n', color=0xf1c40f)
     await message.channel.send(embed=embedVar)
 
+  elif(message.content.startswith('-peshelp invite') or message.content.startswith('-invite')):
+    embedVar=discord.Embed(title='-invite',
+    description='Click the link in my bio to invite the bot to your server\n', color=0xf1c40f)
+    await message.channel.send(embed=embedVar)
+
   elif(message.content.startswith('-peshelp')):    
     help_title=['PES Bot Help', 'Manager commands', 'Player Commands', 'ID Commands', 'Pack Opening Commands']
     help_commands=['-manager', '-formation', '-offensive or -defensive', '-player',
@@ -973,7 +1004,7 @@ async def on_message(message):
     while time.time() < timeout_start + timeout:
       if(count==0):
         embedVar = discord.Embed(title=help_title[0], description='Type -peshelp `command name` to know more about any of the following commands or traverse the menu with the reactions added below', color=0xf1c40f)
-        embedVar.add_field(name="-manager \n-formation \n-offensive \n-defensive \n-player \n-condition \n-position \n-playstyle \n-featured \n-id get \n-id add \n-id update \n-id delete \n-pull IM \n-pull legend \n-pack", value='\a', inline=True)
+        embedVar.add_field(name="-invite \n-manager \n-formation \n-offensive \n-defensive \n-player \n-condition \n-position \n-playstyle \n-featured \n-id get \n-id add \n-id update \n-id delete \n-pull IM \n-pull legend \n-pack", value='\a', inline=True)
         text=await message.channel.send(embed=embedVar)
       elif(count==1):
         embedVar = discord.Embed(title=f'_                       _ {help_title[1]}', color=0xf1c40f)
@@ -1081,7 +1112,7 @@ async def on_message(message):
     f'**-id update 123456789**')
   
   elif(message.content.startswith('-id') or message.content.startswith('-id get')):
-    if(message.content=='-id'): 
+    if(message.content=='-id' or message.content=='-get id'): 
       userid=str(message.author.id)
       PES_ID=ref1.get().get(userid).get('PES_ID')
       await message.reply(f'Your PES ID is {PES_ID}')
@@ -1142,21 +1173,21 @@ async def on_message(message):
     elif(index<36): 
       packref=ref2
       index=random.randint(1,133)
-      text=await message.reply(f'https://media.discordapp.net/attachments/733550157970538586/835481532336046130/black_ball_gif.gif')
+      text=await message.reply(f'https://imgur.com/a/AC0hCTj')
       thumbnail=f'https://media.discordapp.net/attachments/733550157970538586/835481532336046130/black_ball_gif.gif'
-      t=5
+      t=5.8
     elif(index<61):
       packref=ref2
       index=random.randint(134,698)
-      text=await message.reply(f'https://media.discordapp.net/attachments/733550157970538586/835481532336046130/black_ball_gif.gif')
+      text=await message.reply(f'https://imgur.com/a/AC0hCTj')
       thumbnail=f'https://media.discordapp.net/attachments/733550157970538586/835481532336046130/black_ball_gif.gif'
-      t=5
+      t=5.8
     else: 
       packref=ref2
       index=random.randint(699, 2801)
-      text=await message.reply(f'https://media.discordapp.net/attachments/733550157970538586/835481532336046130/black_ball_gif.gif')
+      text=await message.reply(f'https://imgur.com/a/AC0hCTj')
       thumbnail=f'https://media.discordapp.net/attachments/733550157970538586/835481532336046130/black_ball_gif.gif'
-      t=5
+      t=5.8
     Name=packref.get()[index].get('Name')
     Position=packref.get()[index].get('Position')
     Rating=packref.get()[index].get('Rating')
@@ -1171,5 +1202,5 @@ async def on_message(message):
     await text.delete()
     await message.channel.send(embed=embedVar)
 
-TOKEN="Insert Token Here"
+TOKEN="INSERT TOEKN HERE"
 client.run(TOKEN)
