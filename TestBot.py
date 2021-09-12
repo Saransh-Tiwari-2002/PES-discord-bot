@@ -17,10 +17,6 @@ cred_obj1 = firebase_admin.credentials.Certificate('FB_json.json')
 app1 = firebase_admin.initialize_app(cred_obj1, {'databaseURL':'https://test2-b4778-default-rtdb.firebaseio.com/'})
 ref1=db.reference('/')
 
-cred_obj2 = firebase_admin.credentials.Certificate('baseplayer.json')
-app2 = firebase_admin.initialize_app(cred_obj2, {'databaseURL':'https://base-player-database-default-rtdb.firebaseio.com/'}, name='app2')
-ref2=db.reference('/', app2)
-
 cred_obj3 = firebase_admin.credentials.Certificate('IM.json')
 app3 = firebase_admin.initialize_app(cred_obj3, {'databaseURL':'https://im-database-231bb-default-rtdb.firebaseio.com/'}, name='app3')
 ref3=db.reference('/', app3)
@@ -137,17 +133,54 @@ cred_obj_backup= firebase_admin.credentials.Certificate('manager-27.json')
 app_backup = firebase_admin.initialize_app(cred_obj_backup, {'databaseURL':'https://manager-27-default-rtdb.firebaseio.com/'}, name='app_backup')
 ref_backup=db.reference('/', app_backup)
 
+cred_obj_base1 = firebase_admin.credentials.Certificate('base1.json')
+app_base1 = firebase_admin.initialize_app(cred_obj_base1, {'databaseURL':'https://base1-b1868-default-rtdb.firebaseio.com/'}, name='app_base1')
+ref_base1=db.reference('/', app_base1)
+
+cred_obj_base2 = firebase_admin.credentials.Certificate('base2.json')
+app_base2 = firebase_admin.initialize_app(cred_obj_base2, {'databaseURL':'https://base2-9dff0-default-rtdb.firebaseio.com/'}, name='app_base2')
+ref_base2=db.reference('/', app_base2)
+
+cred_obj_base3 = firebase_admin.credentials.Certificate('base3.json')
+app_base3 = firebase_admin.initialize_app(cred_obj_base3, {'databaseURL':'https://base3-787dc-default-rtdb.firebaseio.com/'}, name='app_base3')
+ref_base3=db.reference('/', app_base3)
+
+cred_obj_base4 = firebase_admin.credentials.Certificate('base4.json')
+app_base4 = firebase_admin.initialize_app(cred_obj_base4, {'databaseURL':'https://base4-df4a8-default-rtdb.firebaseio.com/'}, name='app_base4')
+ref_base4=db.reference('/', app_base4)
+
+cred_obj_base5 = firebase_admin.credentials.Certificate('base5.json')
+app_base5 = firebase_admin.initialize_app(cred_obj_base5, {'databaseURL':'https://base5-8ff5e-default-rtdb.firebaseio.com/'}, name='app_base5')
+ref_base5=db.reference('/', app_base5)
+
+cred_obj_base6 = firebase_admin.credentials.Certificate('base6.json')
+app_base6 = firebase_admin.initialize_app(cred_obj_base6, {'databaseURL':'https://base6-7195f-default-rtdb.firebaseio.com/'}, name='app_base6')
+ref_base6=db.reference('/', app_base6)
+
+cred_obj_base7 = firebase_admin.credentials.Certificate('base7.json')
+app_base7 = firebase_admin.initialize_app(cred_obj_base7, {'databaseURL':'https://base7-97169-default-rtdb.firebaseio.com/'}, name='app_base7')
+ref_base7=db.reference('/', app_base7)
+
+cred_obj_base8 = firebase_admin.credentials.Certificate('base8.json')
+app_base8 = firebase_admin.initialize_app(cred_obj_base8, {'databaseURL':'https://base8-5efbb-default-rtdb.firebaseio.com/'}, name='app_base8')
+ref_base8=db.reference('/', app_base8)
+
+cred_obj_base9 = firebase_admin.credentials.Certificate('base9.json')
+app_base9 = firebase_admin.initialize_app(cred_obj_base9, {'databaseURL':'https://base9-8e49f-default-rtdb.firebaseio.com/'}, name='app_base9')
+ref_base9=db.reference('/', app_base9)
+
+cred_obj_base10 = firebase_admin.credentials.Certificate('base10.json')
+app_base10 = firebase_admin.initialize_app(cred_obj_base10, {'databaseURL':'https://base10-d1dcb-default-rtdb.firebaseio.com/'}, name='app_base10')
+ref_base10=db.reference('/', app_base10)
+
+cred_obj_base11 = firebase_admin.credentials.Certificate('base11.json')
+app_base11 = firebase_admin.initialize_app(cred_obj_base11, {'databaseURL':'https://base11-36239-default-rtdb.firebaseio.com/'}, name='app_base11')
+ref_base11=db.reference('/', app_base10)
 
 
 
 client = discord.Client()
 
-"""def mongo_setup():
-  connection_string="mongodb+srv://Bater:warmachinexerox69@cluster0.mytce.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
-  client1 = MongoClient(connection_string)
-  db = client1[ "testdb" ] # makes a test database called "testdb"
-  col = db[ "testcol" ]
-  return col"""
 
 def first_letter(a):
   if(a in 'a'): temp_ref=ref_a
@@ -563,6 +596,25 @@ def latest_featured():
       count+=1
   return player_list
 
+def scouts(name):
+  r=requests.get(f'https://pesdb.net/pes2021/?name={name}')
+  soup=BeautifulSoup(r.content, "html.parser")
+  data=soup.find('tr').find_next('tr').find('a')['href']
+  url=f'https://pesdb.net/pes2021{data[1:]}'
+  img_link=f'	https://pesdb.net/pes2021/images/players{data[5:]}.png'
+  r=requests.get(url)
+  scoutlist=[]
+  soup=BeautifulSoup(r.content, "html.parser")
+  name=soup.find('th', text='Player Name:').find_next('td').text
+  pos=soup.find('th', text='Position:').find_next('td').text
+  ovr=soup.find('th', text='Overall Rating:').find_next('td').text  
+  print(name, pos, ovr)
+  for data in soup.findAll('tr',{'class':'scout_row', 'data-percent':'100'}):
+    templist=[]
+    for div in data.findAll('td'):
+      templist.append(div.text)
+    scoutlist.append(templist)
+  return name, pos, ovr, img_link, scoutlist
 
 @client.event
 async def on_ready():
@@ -978,10 +1030,20 @@ async def on_message(message):
     description='Click the link in my bio to invite the bot to your server\n', color=0xf1c40f)
     await message.channel.send(embed=embedVar)
 
+  elif(message.content.startswith('-peshelp friendly')):
+    embedVar=discord.Embed(title='-friendly',
+    description=f'To challenge others to a friendly, use **-friendly** \n Example: **-friendly**', color=0xf1c40f)
+    await message.channel.send(embed=embedVar)
+  
+  elif(message.content.startswith('-peshelp scout')):
+    embedVar=discord.Embed(title='-scout',
+    description=f'To see the 100% scout combinations for a player, use **-scout** \n Example: **-scout Messi**', color=0xf1c40f)
+    await message.channel.send(embed=embedVar)
+
   elif(message.content.startswith('-peshelp')):    
     help_title=['PES Bot Help', 'Manager commands', 'Player Commands', 'ID Commands', 'Pack Opening Commands']
     help_commands=['-manager', '-formation', '-offensive or -defensive', '-player',
-    '-condition', '-position or -playstyle','-featured or -FT', '-id or -id get', '-id add', '-id update', '-id delete',
+    '-condition', '-position or -playstyle','-featured or -FT', '-scout', '-friendly', '-id or -id get', '-id add', '-id update', '-id delete',
     '-pull IM', '-pull legend', '-pack or -pull']
     help_content=['To get manager details, use -manager\n Example: **-manager gasperini**\n\nTo search for all managers with a particular formation, use -manager\n Example: **-manager 433**',
     'To get the formation of a manager, use -formation\n Example: **-formation Rossi**',
@@ -990,6 +1052,8 @@ async def on_message(message):
     'To get player condition for the week use -condition \n Example: **-condition Ramos**',
     'To search for players by position use -position \n Example: **-position CB**\n\nTo search for players by playstyle use -playstyle \n Example: **-playstyle build up**\n\nYou can also search by position, card types and/or playstyle simultaneously types by adding `base` or `featured` or `legend` or `IM` or `playstyle name` to the text \nExample: **-position CF legend destroyer**',
     'To see the latest featured for the week use **-featured** or **-ft** \n Example: **-featured**',
+    f'To see the 100% scout combinations for a player, use **-scout** \n Example: **-scout Messi**',
+    'To challenge others to a friendly, use **-friendly** \n Example: **-friendly**',
     f'To get the PES ID of another user, use -id @That_User or -id get @That_User\n Example: **-id @{message.author.display_name}**',
     "To delete your PES ID from the bot's records, use -id delete",    
     'To store your PES ID with the bot, use -id add <Your 9 digit ID>\n Example: **-id add 123456789**',
@@ -1004,7 +1068,7 @@ async def on_message(message):
     while time.time() < timeout_start + timeout:
       if(count==0):
         embedVar = discord.Embed(title=help_title[0], description='Type -peshelp `command name` to know more about any of the following commands or traverse the menu with the reactions added below', color=0xf1c40f)
-        embedVar.add_field(name="-invite \n-manager \n-formation \n-offensive \n-defensive \n-player \n-condition \n-position \n-playstyle \n-featured \n-id get \n-id add \n-id update \n-id delete \n-pull IM \n-pull legend \n-pack", value='\a', inline=True)
+        embedVar.add_field(name="-invite \n-manager \n-formation \n-offensive \n-defensive \n-player \n-condition \n-position \n-playstyle \n-featured \n-scout \n-friendly \n-id get \n-id add \n-id update \n-id delete \n-pull IM \n-pull legend \n-pack", value='\a', inline=True)
         text=await message.channel.send(embed=embedVar)
       elif(count==1):
         embedVar = discord.Embed(title=f'_                       _ {help_title[1]}', color=0xf1c40f)
@@ -1018,19 +1082,21 @@ async def on_message(message):
         embedVar.add_field(name=f'\a\n{help_commands[4]}', value=help_content[4], inline=True)
         embedVar.add_field(name=f'\a\n{help_commands[5]}', value=help_content[5], inline=True)
         embedVar.add_field(name=f'\a\n{help_commands[6]}', value=help_content[6], inline=True)
+        embedVar.add_field(name=f'\a\n{help_commands[7]}', value=help_content[7], inline=True)
         text=await message.channel.send(embed=embedVar)
       elif(count==3):
         embedVar = discord.Embed(title=f'_                              _ {help_title[3]}', color=0xf1c40f)
-        embedVar.add_field(name=f'\n{help_commands[7]}', value=help_content[7], inline=True)
-        embedVar.add_field(name=f'\a\n{help_commands[8]}', value=help_content[8], inline=True)
+        embedVar.add_field(name=f'\n{help_commands[8]}', value=help_content[8], inline=True)
         embedVar.add_field(name=f'\a\n{help_commands[9]}', value=help_content[9], inline=True)
         embedVar.add_field(name=f'\a\n{help_commands[10]}', value=help_content[10], inline=True)
+        embedVar.add_field(name=f'\a\n{help_commands[11]}', value=help_content[11], inline=True)
+        embedVar.add_field(name=f'\n{help_commands[12]}', value=help_content[12], inline=True)
         text=await message.channel.send(embed=embedVar)
       elif(count==4):
         embedVar = discord.Embed(title=f'_                  _ {help_title[4]}', color=0xf1c40f)
-        embedVar.add_field(name=f'\n{help_commands[11]}', value=help_content[11], inline=True)
-        embedVar.add_field(name=f'\a\n{help_commands[12]}', value=help_content[12], inline=True)
-        embedVar.add_field(name=f'\a\n{help_commands[13]}', value=help_content[13], inline=True)
+        embedVar.add_field(name=f'\n{help_commands[13]}', value=help_content[13], inline=True)
+        embedVar.add_field(name=f'\a\n{help_commands[14]}', value=help_content[14], inline=True)
+        embedVar.add_field(name=f'\a\n{help_commands[15]}', value=help_content[15], inline=True)
         text=await message.channel.send(embed=embedVar)
       await text.add_reaction('⏮️')
       await text.add_reaction('◀️')
@@ -1124,6 +1190,34 @@ async def on_message(message):
         await message.reply(f'Your requested ID is {PES_ID}')
       except: await message.reply(f'The tagged user has not registered their ID with me yet')
   
+  elif(message.content.startswith('-friendly')):
+    embedVar=discord.Embed(title=f'{message.author.display_name} is looking for a friendly', description='Press the emote below to accept', color=0xf1c40f)
+    text= await message.channel.send(embed=embedVar)
+    try: 
+      PES_ID=ref1.get().get(str(message.author.id)).get('PES_ID')
+      await text.add_reaction('🆔')
+    except: 
+      await text.add_reaction('✅')
+    timeout = 86400   # [seconds]
+    timeout_start = time.time()
+    flag=0
+    while time.time() < timeout_start + timeout:
+      if(flag==1): break
+      reaction, user=await client.wait_for('reaction_add')
+      print(reaction.emoji)
+      if(reaction.emoji == '✅' and reaction.message.id==text.id):
+        if(user.id!=client.user.id and user.id!= message.author.id): 
+          await message.channel.send(f"{user.mention} has accepted {message.author.mention}'s challenge. This where you exchange IDs and stuff.")
+          await text.delete()
+          flag=1
+      
+      elif(reaction.emoji == '🆔'and reaction.message.id==text.id):
+        if(user.id!=client.user.id and user.id!= message.author.id):
+          await message.channel.send(f" {user.mention} has accepted the challenge. {message.author.mention}'s ID is {PES_ID}")
+          await text.delete()
+          flag=1    
+  
+  
   elif(message.content.startswith('-pulliconic') or message.content.startswith('-pullim') or message.content.startswith('-pull im') or message.content.startswith('-pull iconic') or message.content.startswith('-pack iconic') or message.content.startswith('-packiconic') or message.content.startswith('-packim') or message.content.startswith('-pack im')):
     IM_index=random.randint(1,143)
     IM_Name=ref3.get()[IM_index].get('Name')
@@ -1171,23 +1265,48 @@ async def on_message(message):
       thumbnail=f'https://media.discordapp.net/attachments/788705918589468674/836131117861437450/legends_gif.gif?width=406&height=406'
       t=7
     elif(index<36): 
-      packref=ref2
       index=random.randint(1,133)
+      if(index<65):       packref=ref_base1
+      elif(index<129):    
+        packref=ref_base2
+        index=str(index)
+      else:               
+        index=str(index)
+        packref=ref_base11
+      #index=str(index)  
       text=await message.reply(f'https://imgur.com/a/AC0hCTj')
       thumbnail=f'https://media.discordapp.net/attachments/733550157970538586/835481532336046130/black_ball_gif.gif'
       t=5.8
     elif(index<61):
-      packref=ref2
       index=random.randint(134,698)
+      if(index<293):      packref=ref_base3
+      elif(index<457):    
+        index=str(index)
+        packref=ref_base4
+      elif(index<621):    
+        index=str(index)
+        packref=ref_base5
+      elif(index<699):    
+        index=str(index)
+        packref=ref_base11
+      
       text=await message.reply(f'https://imgur.com/a/AC0hCTj')
       thumbnail=f'https://media.discordapp.net/attachments/733550157970538586/835481532336046130/black_ball_gif.gif'
       t=5.8
     else: 
-      packref=ref2
       index=random.randint(699, 2801)
+      if(index<1019):     packref=ref_base6
+      elif(index<1417):   packref=ref_base7
+      elif(index<1815):   packref=ref_base8
+      elif(index<2213):   packref=ref_base9
+      elif(index<2611):   packref=ref_base10
+      elif(index<2802):   packref=ref_base11
+
+      index=str(index)
       text=await message.reply(f'https://imgur.com/a/AC0hCTj')
       thumbnail=f'https://media.discordapp.net/attachments/733550157970538586/835481532336046130/black_ball_gif.gif'
       t=5.8
+    print(index)
     Name=packref.get()[index].get('Name')
     Position=packref.get()[index].get('Position')
     Rating=packref.get()[index].get('Rating')
@@ -1202,5 +1321,76 @@ async def on_message(message):
     await text.delete()
     await message.channel.send(embed=embedVar)
 
-TOKEN="INSERT TOEKN HERE"
+  elif(message.content.startswith('-scout')):
+    name=message.content[7:].replace('scouts', 'scout')
+
+    player_name, player_pos, player_ovr, img_link, scoutlist=scouts(name)
+    count=0
+    flag=0
+    print(len(scoutlist))
+    pagecount=((len(scoutlist) + 9) // 10)
+    timeout = 60   # [seconds]
+    timeout_start = time.time()
+    while time.time() < timeout_start + timeout:
+      if(flag==1): break
+      desc=''
+      endlist=count*10 + 10
+      if(count==pagecount-1): endlist=count*10+ len(scoutlist)%10
+      print(endlist, pagecount, count)
+      for x in range(count*10, endlist):
+        desc+=f'{scoutlist[x][0]}    {scoutlist[x][1]} {scoutlist[x][2]} {scoutlist[x][3]} \n'
+      embedVar=discord.Embed(title=f'{player_name}, {player_pos}, {player_ovr}', color=0xf1c40f)
+      for x in range(count*10, endlist):
+        embedVar.add_field(name=f'{scoutlist[x][0]}    {scoutlist[x][1]} {scoutlist[x][2]} {scoutlist[x][3]}', value='\u200b', inline=True)
+      
+      #embedVar.add_field(name=desc, value='\a', inline=True)
+      embedVar.set_thumbnail(url=img_link)
+      embedVar.set_footer(text=f'Page {count+1} of {pagecount}')
+      text=await message.channel.send(embed=embedVar)
+      await text.add_reaction('⏮️')
+      await text.add_reaction('◀️')
+      await text.add_reaction('▶️')
+      await text.add_reaction('⏭️')
+      while time.time() < timeout_start + timeout:
+        try:
+          if(flag==1): break
+          text = await text.channel.fetch_message(text.id)
+          count_n, count_p, count_nn, count_pp, count_this=0, 0, 0, 0, 0
+          for reaction in text.reactions:
+            if(reaction.emoji == '◀️'):
+              count_n=reaction.count-1
+            elif(reaction.emoji == '▶️'):
+              count_p=reaction.count-1
+            elif(reaction.emoji == '⏮️'):
+              count_nn=reaction.count-1
+            elif(reaction.emoji == '⏭️'):
+              count_pp=reaction.count-1
+            if(count_n==1 and count!=0): 
+              await text.delete()
+              timeout_start = time.time()
+              count-=1
+              break
+            elif(count_p==1 and count!=pagecount-1): 
+              await text.delete()
+              timeout_start = time.time()
+              print('+++++++++++++')
+              count+=1
+              break
+            elif(count_nn==1): 
+              await text.delete()
+              timeout_start = time.time()
+              count=0
+              break
+            elif(count_pp==1): 
+              await text.delete()
+              timeout_start = time.time()
+              count=pagecount-1
+              break
+        except: break
+    await text.remove_reaction('◀️', client.get_user(text.author.id))  
+    await text.remove_reaction('▶️', client.get_user(text.author.id))
+    await text.remove_reaction('⏮️', client.get_user(text.author.id))
+    await text.remove_reaction('⏭️', client.get_user(text.author.id))
+    
+TOKEN="ENTER TOKEN HERE"
 client.run(TOKEN)
