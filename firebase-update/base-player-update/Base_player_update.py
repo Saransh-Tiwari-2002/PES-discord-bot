@@ -15,7 +15,7 @@ import unidecode
 import difflib
 
 cred_obj2 = firebase_admin.credentials.Certificate('baseplayer.json')
-app2 = firebase_admin.initialize_app(cred_obj2, {'databaseURL':'https://base-player-database-default-rtdb.firebaseio.com/'})
+app2 = firebase_admin.initialize_app(cred_obj2, {'databaseURL':'Enter URL here'})
 ref2=db.reference('/')
 
 
