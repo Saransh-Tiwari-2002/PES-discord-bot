@@ -8,35 +8,35 @@ import unidecode
 
 
 cred_obj_t = firebase_admin.credentials.Certificate('manager-20.json')
-app_t = firebase_admin.initialize_app(cred_obj_t, {'databaseURL':'https://manager-20-171d4-default-rtdb.firebaseio.com/'},name= 'app_t')
+app_t = firebase_admin.initialize_app(cred_obj_t, {'databaseURL':'Enter URL here'},name= 'app_t')
 ref_t=db.reference('/', app_t)
 
 cred_obj_u = firebase_admin.credentials.Certificate('manager-21.json')
-app_u = firebase_admin.initialize_app(cred_obj_u, {'databaseURL':'https://manager-21-242e4-default-rtdb.firebaseio.com/'},name= 'app_u')
+app_u = firebase_admin.initialize_app(cred_obj_u, {'databaseURL':'Enter URL here'},name= 'app_u')
 ref_u=db.reference('/', app_u)
 
 cred_obj_v = firebase_admin.credentials.Certificate('manager-22.json')
-app_v = firebase_admin.initialize_app(cred_obj_v, {'databaseURL':'https://manager-22-2254b-default-rtdb.firebaseio.com/'},name= 'app_v')
+app_v = firebase_admin.initialize_app(cred_obj_v, {'databaseURL':'Enter URL here'},name= 'app_v')
 ref_v=db.reference('/', app_v)
 
 cred_obj_w = firebase_admin.credentials.Certificate('manager-23.json')
-app_w = firebase_admin.initialize_app(cred_obj_w, {'databaseURL':'https://manager-23-default-rtdb.firebaseio.com/'},name= 'app_w')
+app_w = firebase_admin.initialize_app(cred_obj_w, {'databaseURL':'Enter URL here'},name= 'app_w')
 ref_w=db.reference('/', app_w)
 
 cred_obj_x = firebase_admin.credentials.Certificate('manager-24.json')
-app_x = firebase_admin.initialize_app(cred_obj_x, {'databaseURL':'https://manager-24-default-rtdb.firebaseio.com/'},name= 'app_x')
+app_x = firebase_admin.initialize_app(cred_obj_x, {'databaseURL':'Enter URL here'},name= 'app_x')
 ref_x=db.reference('/', app_x)
 
 cred_obj_y = firebase_admin.credentials.Certificate('manager-25.json')
-app_y = firebase_admin.initialize_app(cred_obj_y, {'databaseURL':'https://manager-25-default-rtdb.firebaseio.com/'},name= 'app_y')
+app_y = firebase_admin.initialize_app(cred_obj_y, {'databaseURL':'Enter URL here'},name= 'app_y')
 ref_y=db.reference('/', app_y)
 
 cred_obj_z = firebase_admin.credentials.Certificate('manager-26.json')
-app_z = firebase_admin.initialize_app(cred_obj_z, {'databaseURL':'https://manager-26-default-rtdb.firebaseio.com/'},name= 'app_z')
+app_z = firebase_admin.initialize_app(cred_obj_z, {'databaseURL':'Enter URL here'},name= 'app_z')
 ref_z=db.reference('/', app_z)
 
 cred_obj_backup= firebase_admin.credentials.Certificate('manager-27.json')
-app_backup = firebase_admin.initialize_app(cred_obj_backup, {'databaseURL':'https://manager-27-default-rtdb.firebaseio.com/'}, name='app_backup')
+app_backup = firebase_admin.initialize_app(cred_obj_backup, {'databaseURL':'Enter URL here'}, name='app_backup')
 ref_backup=db.reference('/', app_backup)
 
 def get_formation(URL):
