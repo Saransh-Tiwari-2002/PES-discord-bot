@@ -7,27 +7,27 @@ import re
 import unidecode
 
 cred_obj_g = firebase_admin.credentials.Certificate('manager-07.json')
-app_g = firebase_admin.initialize_app(cred_obj_g, {'databaseURL':'https://manager-07-default-rtdb.firebaseio.com/'},name= 'app_g')
+app_g = firebase_admin.initialize_app(cred_obj_g, {'databaseURL':'Enter URL here'},name= 'app_g')
 ref_g=db.reference('/', app_g)
 
 cred_obj_h = firebase_admin.credentials.Certificate('manager-08.json')
-app_h = firebase_admin.initialize_app(cred_obj_h, {'databaseURL':'https://manager-08-default-rtdb.firebaseio.com/'},name= 'app_h')
+app_h = firebase_admin.initialize_app(cred_obj_h, {'databaseURL':'Enter URL here'},name= 'app_h')
 ref_h=db.reference('/', app_h)
 
 cred_obj_i = firebase_admin.credentials.Certificate('manager-09.json')
-app_i = firebase_admin.initialize_app(cred_obj_i, {'databaseURL':'https://manager-09-default-rtdb.firebaseio.com/'},name= 'app_i')
+app_i = firebase_admin.initialize_app(cred_obj_i, {'databaseURL':'Enter URL here'},name= 'app_i')
 ref_i=db.reference('/', app_i)
 
 cred_obj_j = firebase_admin.credentials.Certificate('manager-10.json')
-app_j = firebase_admin.initialize_app(cred_obj_j, {'databaseURL':'https://manager-10-424ea-default-rtdb.firebaseio.com/'},name= 'app_j')
+app_j = firebase_admin.initialize_app(cred_obj_j, {'databaseURL':'Enter URL here'},name= 'app_j')
 ref_j=db.reference('/', app_j)
 
 cred_obj_k = firebase_admin.credentials.Certificate('manager-11.json')
-app_k = firebase_admin.initialize_app(cred_obj_k, {'databaseURL':'https://manager-11-4eda6-default-rtdb.firebaseio.com/'},name= 'appk')
+app_k = firebase_admin.initialize_app(cred_obj_k, {'databaseURL':'Enter URL here'},name= 'appk')
 ref_k=db.reference('/', app_k)
 
 cred_obj_backup= firebase_admin.credentials.Certificate('manager-27.json')
-app_backup = firebase_admin.initialize_app(cred_obj_backup, {'databaseURL':'https://manager-27-default-rtdb.firebaseio.com/'}, name='app_backup')
+app_backup = firebase_admin.initialize_app(cred_obj_backup, {'databaseURL':'Enter URL here'}, name='app_backup')
 ref_backup=db.reference('/', app_backup)
 
 def get_formation(URL):
