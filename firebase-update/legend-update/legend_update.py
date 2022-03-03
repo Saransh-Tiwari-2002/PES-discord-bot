@@ -8,7 +8,7 @@ import json
 
 
 cred_obj3 = firebase_admin.credentials.Certificate('legend.json')
-app4 = firebase_admin.initialize_app(cred_obj3, {'databaseURL':'https://legend-database-default-rtdb.firebaseio.com/'}, name='app4')
+app4 = firebase_admin.initialize_app(cred_obj3, {'databaseURL':'Enter URL here'}, name='app4')
 ref4=db.reference('/', app4)
 
 def legend_update():
