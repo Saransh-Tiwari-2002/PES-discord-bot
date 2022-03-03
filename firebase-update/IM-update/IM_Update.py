@@ -5,7 +5,7 @@ import re
 
 
 cred_obj = firebase_admin.credentials.Certificate('IM.json')
-default_app = firebase_admin.initialize_app(cred_obj, {'databaseURL':'https://im-database-231bb-default-rtdb.firebaseio.com/'})
+default_app = firebase_admin.initialize_app(cred_obj, {'databaseURL':'Enter URL here'})
 ref=db.reference('/')
 
 flag=0
