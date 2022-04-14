@@ -9,91 +9,45 @@ import discord
 import requests
 from bs4 import BeautifulSoup
 import firebase_admin
-from firebase_admin import credentials
 from firebase_admin import db
 import re
-from datetime import date
 import json
 import time
 import unidecode
 import difflib
+from .create_pack_database_master import create_pack_database
+from .create_potw_pack_master import create_potw_pack
+from .download_csv_github_master import get_json_from_github
 
 cred_obj1 = firebase_admin.credentials.Certificate('FB_json.json')
-app1 = firebase_admin.initialize_app(cred_obj1, {'databaseURL':'Enter Database URL here'})
+app1 = firebase_admin.initialize_app(cred_obj1, {'databaseURL':'ENTER DATABASE URL HERE'})
 ref1=db.reference('/')
-
-cred_obj3 = firebase_admin.credentials.Certificate('IM.json')
-app3 = firebase_admin.initialize_app(cred_obj3, {'databaseURL':'Enter Database URL here'}, name='app3')
-ref3=db.reference('/', app3)
-
-cred_obj4 = firebase_admin.credentials.Certificate('legend.json')
-app4 = firebase_admin.initialize_app(cred_obj4, {'databaseURL':'Enter Database URL here'}, name='app4')
-ref4=db.reference('/', app4)
-
-cred_obj_backup= firebase_admin.credentials.Certificate('manager-27.json')
-app_backup = firebase_admin.initialize_app(cred_obj_backup, {'databaseURL':'Enter Database URL here'}, name='app_backup')
-ref_backup=db.reference('/', app_backup)
-
-cred_obj_base1 = firebase_admin.credentials.Certificate('base1.json')
-app_base1 = firebase_admin.initialize_app(cred_obj_base1, {'databaseURL':'Enter Database URL here'}, name='app_base1')
-ref_base1=db.reference('/', app_base1)
-
-cred_obj_base2 = firebase_admin.credentials.Certificate('base2.json')
-app_base2 = firebase_admin.initialize_app(cred_obj_base2, {'databaseURL':'Enter Database URL here'}, name='app_base2')
-ref_base2=db.reference('/', app_base2)
-
-cred_obj_base3 = firebase_admin.credentials.Certificate('base3.json')
-app_base3 = firebase_admin.initialize_app(cred_obj_base3, {'databaseURL':'Enter Database URL here'}, name='app_base3')
-ref_base3=db.reference('/', app_base3)
-
-cred_obj_base4 = firebase_admin.credentials.Certificate('base4.json')
-app_base4 = firebase_admin.initialize_app(cred_obj_base4, {'databaseURL':'Enter Database URL here'}, name='app_base4')
-ref_base4=db.reference('/', app_base4)
-
-cred_obj_base5 = firebase_admin.credentials.Certificate('base5.json')
-app_base5 = firebase_admin.initialize_app(cred_obj_base5, {'databaseURL':'Enter Database URL here'}, name='app_base5')
-ref_base5=db.reference('/', app_base5)
-
-cred_obj_base6 = firebase_admin.credentials.Certificate('base6.json')
-app_base6 = firebase_admin.initialize_app(cred_obj_base6, {'databaseURL':'Enter Database URL here'}, name='app_base6')
-ref_base6=db.reference('/', app_base6)
-
-cred_obj_base7 = firebase_admin.credentials.Certificate('base7.json')
-app_base7 = firebase_admin.initialize_app(cred_obj_base7, {'databaseURL':'Enter Database URL here'}, name='app_base7')
-ref_base7=db.reference('/', app_base7)
-
-cred_obj_base8 = firebase_admin.credentials.Certificate('base8.json')
-app_base8 = firebase_admin.initialize_app(cred_obj_base8, {'databaseURL':'Enter Database URL here'}, name='app_base8')
-ref_base8=db.reference('/', app_base8)
-
-cred_obj_base9 = firebase_admin.credentials.Certificate('base9.json')
-app_base9 = firebase_admin.initialize_app(cred_obj_base9, {'databaseURL':'Enter Database URL here'}, name='app_base9')
-ref_base9=db.reference('/', app_base9)
-
-cred_obj_base10 = firebase_admin.credentials.Certificate('base10.json')
-app_base10 = firebase_admin.initialize_app(cred_obj_base10, {'databaseURL':'Enter Database URL here'}, name='app_base10')
-ref_base10=db.reference('/', app_base10)
-
-cred_obj_base11 = firebase_admin.credentials.Certificate('base11.json')
-app_base11 = firebase_admin.initialize_app(cred_obj_base11, {'databaseURL':'Enter Database URL here'}, name='app_base11')
-ref_base11=db.reference('/', app_base10)
 
 pos_coordinates=[[66.14035087719299, 22.73972602739726, 30.4093567251462, 7.579908675799087], [55.49707602339181, 22.73972602739726, 30.4093567251462, 8.337899543378995], [55.49707602339181, 3.7899543378995433, 15.2046783625731, 18.949771689497716], [55.49707602339181, 56.84931506849315, 15.2046783625731, 18.949771689497716], [44.853801169590646, 22.73972602739726, 30.4093567251462, 8.337899543378995], [34.21052631578947, 22.73972602739726, 30.4093567251462, 8.337899543378995], [23.567251461988302, 3.7899543378995433, 15.2046783625731, 29.561643835616437], [23.567251461988302, 56.84931506849315, 15.2046783625731, 29.561643835616437], [23.567251461988302, 22.73972602739726, 30.4093567251462, 8.337899543378995], [2.280701754385965, 3.7899543378995433, 15.2046783625731, 18.949771689497716], [2.280701754385965, 56.84931506849315, 15.2046783625731, 18.949771689497716], [12.923976608187134, 22.73972602739726, 30.4093567251462, 8.337899543378995], [2.280701754385965, 22.73972602739726, 30.4093567251462, 8.337899543378995]]
 pos_list=['GK', 'CB', 'LB', 'RB','DMF', 'CMF', 'LMF', 'RMF', 'AMF', 'LWF', 'RWF', 'SS', 'CF']
 
 
-with open('csv_file.csv',errors="ignore", newline='') as csvfile:
+with open('csv_file_managers.csv',errors="ignore", newline='') as csvfile:
     spamreader_manager = list(csv.reader(csvfile, delimiter=','))
     namelist_manager=[]
     for row in spamreader_manager[:-1]:
         namelist_manager.append(row[1].lower().replace(' ', '-').replace('.','-').replace('--', '-'))
 
 
-with open('1a.csv',errors="ignore", newline='') as csvfile:
+with open('player_file.csv',errors="ignore", newline='') as csvfile:
     spamreader = list(csv.reader(csvfile, delimiter=','))
     namelist=[]
     for row in spamreader[:-1]:
         namelist.append(row[1].lower().replace(' ', '-').replace('.','-').replace('--', '-'))
+
+with open('IM_players.csv',errors="ignore", newline='') as csvfile:
+    spamreader_IM= list(csv.reader(csvfile, delimiter=','))
+  
+with open('Legend_players.csv',errors="ignore", newline='') as csvfile:
+    spamreader_legend= list(csv.reader(csvfile, delimiter=','))
+
+with open('Latest_featured_players.csv',errors="ignore", newline='') as csvfile:
+    spamreader_potw= list(csv.reader(csvfile, delimiter=','))
 
 
 def get_manager(query, querytype=1):        #-manager, -offensive, -defensive, -formation
@@ -105,14 +59,25 @@ def get_manager(query, querytype=1):        #-manager, -offensive, -defensive, -
         if(query.count('-')>0):
             return  get_manager(query[query.index('-')+1:], querytype)
         return  get_manager(difflib.get_close_matches(query, namelist)[0], querytype)
-    temp.sort(key= lambda x: int(x[3]), reverse=True)
-    return temp[0], bool(len(temp))
+    temp.sort(key= lambda x: int(x[14]), reverse=True)
+    return temp[0]
+
+def get_pic_formation(position_xy):
+    img = Image.open('green_pitch.png', 'r')
+    for pos in position_xy:
+        draw =ImageDraw.Draw(img)
+        X, Y = pos[1], pos[0]
+        r = 40
+        draw.ellipse([(X-r, Y-r), (X+r, Y+r)], fill = 'white', outline ='white')
+    temp_img_name=get_random_name()
+    img.rotate(180).save(f'{temp_img_name}.png')
+    #img.close()
+    return temp_img_name
 
 def get_random_name():
     name=''
     for x in range(20):
         name+=chr(random.randint(97, 122))
-    print(name)
     return name
 
 def get_colour(rating):
@@ -124,20 +89,19 @@ def get_colour(rating):
 
 
 def get_pic_familiarity(position_rgb, pos_rating_list):
-    print(type(pos_rating_list))
     temp_rgb=position_rgb.replace('[', '').replace(']', '').replace("'",'').replace(' ', '').split(",")
     position_rgb=[]
     for x in range(0, len(temp_rgb), 3):
         position_rgb.append(temp_rgb[x:x+3])
     pos_rating_list=pos_rating_list.replace('[', '').replace(']', '').replace("'",'').replace(' ', '').split(",")
-    print(position_rgb)
+ 
     img = Image.open('pos_rating.png', 'r')
-    print(img.size)
+    
     basewidth = 130
     #img = Image.open('somepic.jpg')
     wpercent = (basewidth/float(img.size[0]))
     hsize = int((float(img.size[1])*float(wpercent)))
-    print(basewidth, hsize, '------')
+   
     img = img.resize((basewidth,hsize), Image.ANTIALIAS)
     count=0
     for pos in position_rgb:
@@ -145,7 +109,7 @@ def get_pic_familiarity(position_rgb, pos_rating_list):
         #shape=[(pos_coordinates[count][1]*1.72)-2.5, pos_coordinates[count][0]*2.17, (pos_coordinates[count][2]+pos_coordinates[count][1])*1.72, (pos_coordinates[count][3]+pos_coordinates[count][0])*2.17]
         shape=[(pos_coordinates[count][1]*1.72)-2.5, pos_coordinates[count][0]*2.17, (pos_coordinates[count][2]+pos_coordinates[count][1])*1.72, (pos_coordinates[count][3]+pos_coordinates[count][0])*2.17]
 
-        print(shape)
+        
         draw.rectangle(shape, fill =(int(pos[0]), int(pos[1]), int(pos[2])), outline ='white')
         width, height = shape[2]+shape[0], shape[3]+shape[1]
         draw.rounded_rectangle([width/2-10, height/2-6,width/2+9, height/2+5], 2, fill ='black', outline ='black')
@@ -153,19 +117,13 @@ def get_pic_familiarity(position_rgb, pos_rating_list):
         count+=1
     temp_img_name=get_random_name()
     img.save(f'{temp_img_name}.png')
-    print(temp_img_name)
+    
     #img.save('efootball.png')
     #time.sleep(20)
     return temp_img_name
 
 
-def sex():
-    new_l=[]
-    for x in pos_coordinates:
-        #new_l.append([x[0]*0.584795, x[1]*0.58447489, x[2]*0.584795, x[3]*0.58447489])
-        new_l.append([x[0]*130/171, x[1]*166/219, x[2]*130/171, x[3]*166/219])
-    print(new_l)
-#sex()
+
 
 #By name:    query=query.lower().replace(' ', '-').replace('.','-').replace('--', '-')\
 #By Format
@@ -181,6 +139,28 @@ def text_search(query, querytype=1):
         return text_search(difflib.get_close_matches(query, namelist)[0], querytype)
     temp.sort(key= lambda x: int(x[7]), reverse=True)
     return temp, bool(len(temp))
+
+def scouts(name):
+  r=requests.get(f'https://pesdb.net/pes2021/?name={name}')
+  soup=BeautifulSoup(r.content, "html.parser")
+  data=soup.find('tr').find_next('tr').find('a')['href']
+  url=f'https://pesdb.net/pes2021{data[1:]}'
+  img_link=f'	https://pesdb.net/pes2021/images/players{data[5:]}.png'
+  r=requests.get(url)
+  scoutlist=[]
+  soup=BeautifulSoup(r.content, "html.parser")
+  name=soup.find('th', text='Player Name:').find_next('td').text
+  pos=soup.find('th', text='Position:').find_next('td').text
+  ovr=soup.find('th', text='Overall Rating:').find_next('td').text  
+  
+  for data in soup.findAll('tr',{'class':'scout_row', 'data-percent':'100'}):
+    templist=[]
+    for div in data.findAll('td'):
+      templist.append(div.text)
+    scoutlist.append(templist)
+  return name, pos, ovr, img_link, scoutlist
+
+
 
 client = discord.Client(activity=discord.Game(name="-peshelp"))
 
@@ -200,24 +180,104 @@ async def on_message(message):
   message.content=message.content.lower().strip()
   message.content=unidecode.unidecode(message.content)
   if client.user.mentioned_in(message):
-    print(message.content)
+    
     message.content=message.content.replace(f'<@{client.user.id}>', '').strip()
     if '  ' in message.content:
       while '  ' in message.content:
         message.content= message.content.replace('  ', ' ')
-    print(message.content)
+    
     if('help' in message.content or len(message.content)==0): message.content='-peshelp'
 
-  if(message.content.startswith('-manager')):
+  if(message.content.startswith('-update database') and message.author.id==694568372331085884):
+      get_json_from_github()
+      create_potw_pack()
+      create_pack_database()
+      await message.reply(f'Update finished at {time.strftime("%H:%M:%S", time.localtime())}')
+
+
+  elif(message.content.startswith('-manager')):
     name=message.content[9:]
     if(name.replace(' ','').replace('.','').isalpha()): 
       manager_info=get_manager(name.lower().replace(' ', '-').replace('.','-').replace('--', '-'))
       manager_name=manager_info[1]
       formation_temp=manager_info[2].replace('--', '-')
-      manager_skill=manager_info[3]
-      manager_cost=manager_info[4]
-      offensive_tactics=manager_info[5:17]
-      defensive_tactics=manager_info[17:]
+      manager_skill=manager_info[14]
+      manager_cost=manager_info[15]
+      
+      count=0
+      timeout = 30   # [seconds]
+      timeout_start = time.time()
+      temp_img_name=get_pic_formation(json.loads('['+str(manager_info[3:14])[2:-2].replace("'",'')+']'))
+      while time.time() < timeout_start + timeout:
+        if(count==0):
+          embedVar=discord.Embed(title=f'{manager_name}', color=0xf1c40f)
+          embedVar.add_field(name=f"Formation: ", value=formation_temp, inline=True)
+          embedVar.add_field(name=f"Manager Skill: ", value=manager_skill, inline=True)
+          embedVar.add_field(name=f"Cost: ", value=manager_cost, inline=True)
+          
+     
+          file = discord.File(f"{temp_img_name}.png", filename=f"{temp_img_name}.png")
+          embedVar.set_image(url=f"attachment://{temp_img_name}.png")
+          text1=await message.channel.send(file=file, embed=embedVar)
+        else:
+          embedVar=discord.Embed(title=f"{manager_name}'s tactics are:\n", description=
+          f'**Offensive Tactics:**'
+          f'\nAttacking Style:                     {manager_info[16]}'
+          f'\nBuild Up:                                  {manager_info[17]}'
+          f'\nAttacking Area:                     {manager_info[18]}'
+          f'\nPositioning:                             {manager_info[19]}'
+          f'\nSupport Range:                      {manager_info[20]}'
+          f'\nNumbers in Attack:              {manager_info[21]}'
+          f'\nDefensive Style:                     {manager_info[22]}'
+          f'\nContainment Area:               {manager_info[23]}'
+          f'\nPressuring:                              {manager_info[24]}'
+          f'\nDefensive Line:                      {manager_info[25]}'
+          f'\nCompactness:                        {manager_info[26]}'
+          f'\nNumbers in Defence:           {manager_info[27]}' 
+          f'\n-------------------------------------------------------'
+          f'\n\n**Defensive Tactics:**'
+          f'\nAttacking Style:                     {manager_info[28]}'
+          f'\nBuild Up:                                  {manager_info[29]}'
+          f'\nAttacking Area:                     {manager_info[30]}'
+          f'\nPositioning:                             {manager_info[31]}'
+          f'\nSupport Range:                      {manager_info[32]}'
+          f'\nNumbers in Attack:              {manager_info[33]}'
+          f'\nDefensive Style:                     {manager_info[34]}'
+          f'\nContainment Area:               {manager_info[35]}'
+          f'\nPressuring:                              {manager_info[36]}'
+          f'\nDefensive Line:                      {manager_info[37]}'
+          f'\nCompactness:                        {manager_info[38]}', color=0xf1c40f)
+          #f'\nNumbers in Defence:           {manager_info[39]}', color=0xf1c40f)
+          text1=await message.channel.send(embed=embedVar)
+
+        if(count==1):   await text1.add_reaction('◀️')
+        if(count==0):   await text1.add_reaction('▶️')
+        while time.time() < timeout_start + timeout:
+          try:
+            text1= await text1.channel.fetch_message(text1.id)
+            count_n1, count_p1=0, 0
+            for reaction in text1.reactions:
+              if(reaction.emoji == '◀️'):
+                count_n1=reaction.count-1
+              elif(reaction.emoji == '▶️'):
+                count_p1=reaction.count-1
+              if(count_n1==1 and count!=0): 
+                await text1.delete()
+                timeout_start = time.time()
+                count=0
+                break
+              elif(count_p1==1 and count!=1):
+                
+                await text1.delete()
+                timeout_start1 = time.time()
+                
+                count=1
+                break
+          except: break
+      if(count==1):    await text1.remove_reaction('◀️', client.get_user(text1.author.id))
+      elif(count==0):  await text1.remove_reaction('▶️', client.get_user(text1.author.id))
+      os.remove(f'{temp_img_name}.png')
+
     else: 
       query, sum=str(),0 
       for x in message.content:
@@ -229,12 +289,16 @@ async def on_message(message):
           manager_info=get_manager(query[:-1], 2)
           manager_name=manager_info[1]
           formation_temp=manager_info[2].replace('--', '-')
-          manager_skill=manager_info[3]
-          manager_cost=manager_info[4]
-          offensive_tactics=manager_info[5:17]
-          defensive_tactics=manager_info[17:]
+          manager_skill=manager_info[14]
+          manager_cost=manager_info[15]
+          offensive_tactics=manager_info[16:28]
+          defensive_tactics=manager_info[28:]
           embedVar=discord.Embed(title=f'Parent URL---{query[:-1]}', color=0xf1c40f)
+          temp_img_name=get_pic_formation(json.loads('['+str(manager_info[3:14])[2:-2].replace("'",'')+']'))
+          file = discord.File(f"{temp_img_name}.png", filename=f"{temp_img_name}.png")
+          embedVar.set_image(url=f"attachment://{temp_img_name}.png")
           await message.reply(embed=embedVar)
+          os.remove(f'{temp_img_name}.png')
 
   elif(message.content.startswith('-player')):
     plist, flag_ban=text_search(message.content[8:])            
@@ -247,7 +311,7 @@ async def on_message(message):
         if(flag==1): break
         player_ID=plist[count][0]
         player_name=plist[count][1]
-        print(player_name)
+       
         player_ovr=plist[count][7]
         player_pos=plist[count][3]
         if(plist[count][2]=='Base'):
@@ -294,8 +358,7 @@ async def on_message(message):
                   timeout1 = 60   # [seconds]
                   timeout_start1 = time.time()
                   while time.time() < timeout_start1 + timeout1:
-                    print('siiiiiii')
-                    print(count1)
+                    
                     if(count1==0):  
                       if(player_pos!='0'):  
                         embed2=discord.Embed(title=f'{player_name}, {player_pos}, {player_ovr}',
@@ -313,17 +376,17 @@ async def on_message(message):
                       text1=await message.channel.send(embed=embed2)
                         
                     elif(count1==1):
-                      print('check0')
+                      
                       embed2=discord.Embed(title=f'{player_name}, {player_pos}, {player_ovr}', color=0xf1c40f)
-                      print('check1') 
+                      
                       #embed2.add_field(name=f'\u200b\nNationality: {plist[count][2]}', value='\u200b', inline=True)
                       player_condition=plist[count][5]
                       #embed2.add_field(name=f"\u200b\nNationality: {CountryCode.get(plist[count][7])} \nStronger Foot: {['Right', 'Left'][int(plist[count][12])]} \nHeight: {plist[count][9]}cm \nCondition: {player_condition} \nWeak Foot Usage: {plist[count][53]} \nWeak Foot Acc: {plist[count][54]} \nForm: {plist[count][55]} \nInjury Resistance: {plist[count][56]}", value='\u200b', inline=True)
                       embed2.add_field(name=f'\u200b\nPlaying Style', value=plist[count][4], inline=True)
-                      print('check3')
+                      
                       temp_skills=plist[count][11].replace(', ', '\n').replace("'", "").replace("[", "").replace("]", "")
                       skill_count=temp_skills.count('\n')+1
-                      print('check4')
+                     
                       embed2.add_field(name=f"\u200b\nPlayer Skills- {skill_count}", value=temp_skills, inline=True)
                       COM_playing_styles=plist[count][12].replace(', ', '\n').replace("'", "").replace("[", "").replace("]", "")
                       skill_count=COM_playing_styles.count('\n')+1
@@ -335,11 +398,10 @@ async def on_message(message):
                       temp_img_name=get_pic_familiarity(plist[count][14], plist[count][13])
                       file = discord.File(f"{temp_img_name}.png", filename=f"{temp_img_name}.png")
                       embed2.set_image(url=f"attachment://{temp_img_name}.png")
-                      print('check5')
-                      print(temp_skills, skill_count)
+                     
                       text1=await message.channel.send(file=file, embed=embed2)
-                    #os.remove(f'{temp_img_name}.png')
-                    print('check6')
+                      os.remove(f'{temp_img_name}.png')
+                   
                     if(count1==1):   await text1.add_reaction('◀️')
                     if(count1==0):   await text1.add_reaction('▶️')
                     while time.time() < timeout_start1 + timeout1:
@@ -357,10 +419,10 @@ async def on_message(message):
                             count1=0
                             break
                           elif(count_p1==1 and count1!=1):
-                            print('HELLLLLLLL') 
+                            
                             await text1.delete()
                             timeout_start1 = time.time()
-                            print('here')
+                           
                             count1=1
                             break
                       except: break
@@ -372,7 +434,7 @@ async def on_message(message):
                   await err.send('<@694568372331085884> change {0.user}'.format(client))
                 break
               if(count_n==1 and count!=0): 
-                print('sexyy')
+              
                 await text.delete()
                 timeout_start = time.time()
                 count-=1
@@ -380,17 +442,17 @@ async def on_message(message):
               elif(count_p==1 and count!=len(plist)-1): 
                 await text.delete()
                 timeout_start = time.time()
-                print('+++++++++++++')
+                
                 count+=1
                 break
               elif(count_nn==1): 
-                print('sex')
+                
                 await text.delete()
                 timeout_start = time.time()
                 count=0
                 break
               elif(count_pp==1): 
-                print('sexx')
+                
                 await text.delete()
                 timeout_start = time.time()
                 count=len(plist)-1
@@ -403,7 +465,7 @@ async def on_message(message):
       await err.send('<@694568372331085884> change {0.user}'.format(client))
   
   elif(message.content.startswith('-featured') or message.content.startswith('-ft')):
-    plist, flag_ban=latest_featured()
+    plist, flag_ban=spamreader_potw[1:], True
     if(flag_ban==True):
       count=0
       flag=0
@@ -411,19 +473,29 @@ async def on_message(message):
       timeout_start = time.time()
       while time.time() < timeout_start + timeout:
         if(flag==1): break
-        img_link=plist[count]['img']
-        player_name=plist[count]['player name']
-        player_ovr=plist[count]['ovr']
-        player_pos=plist[count]['player position']
-        player_link=plist[count]['link']
+        player_ID=plist[count][0]
+        player_name=plist[count][1]
+        
+        player_ovr=plist[count][7]
+        player_pos=plist[count][3]
+        if(plist[count][2]=='Base'):
+            img_link=f'https://novasoftwarestudio.online/peshub21/Images/Players/{player_ID}.png'  
+        else:
+            img_link=f'https://novasoftwarestudio.online/peshub21/Images/Players/{player_ID}_l.png'
+        img_thumbnail=f'https://novasoftwarestudio.online/peshub21/Images/Players/{player_ID}.png'
+        #url_player_name=player_name.lower().replace(' ', '-').replace('.','-').replace('--','-')
+        #player_link=f'https://efootballhub.net/pes21/player/{player_ID}'
+        #player_link=f'Parent URL{player_ID}'
         embedVar=discord.Embed(title=f'{count+1}.  {player_name}, {player_pos}, {player_ovr}', color=0xf1c40f)
         embedVar.set_image(url=img_link)
         text=await message.channel.send(embed=embedVar)
-        await text.add_reaction('⏮️')
-        await text.add_reaction('◀️')
+        if(count>0):
+            await text.add_reaction('⏮️')
+            await text.add_reaction('◀️')
         await text.add_reaction('⬛')
-        await text.add_reaction('▶️')
-        await text.add_reaction('⏭️')
+        if(count<len(plist)-1): 
+            await text.add_reaction('▶️')
+            await text.add_reaction('⏭️')
         while time.time() < timeout_start + timeout:
           try:
             if(flag==1): break
@@ -442,9 +514,7 @@ async def on_message(message):
                 count_pp=reaction.count-1
               if(count_this==1):
                 flag=1
-                dic, additional_info, flag_ban=get_player_stats(player_link)
                 if(flag_ban==True):
-                  dic=list(dic.values())
                   await text.delete()
                   ##############SECOND MENU STARTS#########################
                   
@@ -452,31 +522,52 @@ async def on_message(message):
                   timeout1 = 60   # [seconds]
                   timeout_start1 = time.time()
                   while time.time() < timeout_start1 + timeout1:
+                   
                     if(count1==0):  
-                      if(dic[20]=='40'):  
-                        embed2=discord.Embed(title=f'{player_name}, {player_pos}, {dic[25]}',
-                        description=f'**Attacking** \nOffensive Awareness: **{dic[0]}** \nBall Control: **{dic[1]}** \nDribbling: **{dic[2]}** \nTight Possession: **{dic[3]}**'
-                        f'\nLow Pass: **{dic[4]}** \nLofted Pass: **{dic[5]}** \nFinishing: **{dic[6]}** \nHeading: **{dic[7]}** \nPlace Kicking: **{dic[8]}**'
-                        f'\nCurl: **{dic[9]}** \n\n**Athletiscism**\nSpeed: **{dic[10]}** \nAcceleration: **{dic[11]}** \nKicking Power: **{dic[12]}** \nJump: **{dic[13]}** \nPhysical Contact: **{dic[14]}**'
-                        f'\nBalance: **{dic[15]}** \nStamina: **{dic[16]}** \n\n**Defending** \nDefensive Awareness: **{dic[17]}** \nBall Winning: **{dic[18]}** \nAggression: **{dic[19]}** \n[Link]({player_link})', color=0xf1c40f)
-                        embed2.set_thumbnail(url=img_link)
+                      if(player_pos!='0'):  
+                        embed2=discord.Embed(title=f'{player_name}, {player_pos}, {player_ovr}',
+                        #description=f'{plist[count][17:38]} \n{player_link}', color=0xf1c40f)
+                        description=f'**Attacking** \nOffensive Awareness: **{plist[count][15]}** \nBall Control: **{plist[count][16]}** \nDribbling: **{plist[count][17]}** \nTight Possession: **{plist[count][18]}**'
+                        f'\nLow Pass: **{plist[count][19]}** \nLofted Pass: **{plist[count][20]}** \nFinishing: **{plist[count][21]}**  \nPlace Kicking: **{plist[count][23]}** \nCurl: **{plist[count][24]}**'
+                        f'\nHeading: **{plist[count][22]}**\n\n**Athletiscism**\nSpeed: **{plist[count][37]}** \nAcceleration: **{plist[count][38]}** \nKicking Power: **{plist[count][39]}** \nJump: **{plist[count][34]}** \nPhysical Contact: **{plist[count][25]}**'
+                        f'\nBalance: **{plist[count][35]}** \nStamina: **{plist[count][36]}** \n\n**Defending** \nDefensive Awareness: **{plist[count][26]}** \nBall Winning: **{plist[count][27]}** \nAggression: **{plist[count][28]}**', color=0xf1c40f)
+                        embed2.set_thumbnail(url=img_thumbnail)
                       else:
                         embed2=discord.Embed(title=f'{player_name}, {player_pos}',
-                        description=f'**GoalKeeeping** \nGK Awareness: **{dic[20]}** \nGK Catching: **{dic[21]}** \nGK Clearing: **{dic[22]}** \nGK Reflexes: **{dic[23]}** \nGK Reach: **{dic[24]}** \n[Link]({player_link})', color=0xf1c40f) 
-                        embed2.set_thumbnail(url=img_link)
+                        #description=f'{plist[count][38:42]} \n{player_link}', color=0xf1c40f) 
+                        description=f'**GoalKeeeping** \nGK Awareness: **{plist[count][29]}** \nGK Catching: **{plist[count][30]}** \nGK Clearing: **{plist[count][31]}** \nGK Reflexes: **{plist[count][32]}** \nGK Reach: **{plist[count][33]}**', color=0xf1c40f) 
+                        embed2.set_thumbnail(url=img_thumbnail)
+                      text1=await message.channel.send(embed=embed2)
+                        
                     elif(count1==1):
-                      embed2=discord.Embed(title=f'{player_name}, {player_pos}, {dic[25]}', color=0xf1c40f)
-                      embed2.add_field(name=f'Playing Style', value=additional_info[0], inline=True)
-                      embed2.add_field(name=f'\u200b\nNationality: {additional_info[3]} \nStronger Foot: {additional_info[4]} \nHeight: {additional_info[5]}cm \nCondition: {additional_info[6]} \nWeak Foot Usage: {additional_info[7]} \nWeak Foot Acc: {additional_info[8]} \nForm: {additional_info[9]} \nInjury Resistance: {additional_info[10]}', value='\u200b', inline=True)
-                      embed2.add_field(name=f'Playing Style', value=additional_info[0], inline=True)
-                      skill_counter=additional_info[1].count('\n')+1 if additional_info[1].count('\n')!=10 else 10
-                      embed2.add_field(name=f'\u200b\nPlayer Skills- {skill_counter}', value=additional_info[1], inline=True)
-                      embed2.add_field(name=f'\u200b\nCOM Playing Styles', value=additional_info[2], inline=True)
-                      embed2.set_thumbnail(url=img_link)
+                     
+                      embed2=discord.Embed(title=f'{player_name}, {player_pos}, {player_ovr}', color=0xf1c40f)
+                     
+                      #embed2.add_field(name=f'\u200b\nNationality: {plist[count][2]}', value='\u200b', inline=True)
+                      player_condition=plist[count][5]
+                      #embed2.add_field(name=f"\u200b\nNationality: {CountryCode.get(plist[count][7])} \nStronger Foot: {['Right', 'Left'][int(plist[count][12])]} \nHeight: {plist[count][9]}cm \nCondition: {player_condition} \nWeak Foot Usage: {plist[count][53]} \nWeak Foot Acc: {plist[count][54]} \nForm: {plist[count][55]} \nInjury Resistance: {plist[count][56]}", value='\u200b', inline=True)
+                      embed2.add_field(name=f'\u200b\nPlaying Style', value=plist[count][4], inline=True)
+                      
+                      temp_skills=plist[count][11].replace(', ', '\n').replace("'", "").replace("[", "").replace("]", "")
+                      skill_count=temp_skills.count('\n')+1
+                      
+                      embed2.add_field(name=f"\u200b\nPlayer Skills- {skill_count}", value=temp_skills, inline=True)
+                      COM_playing_styles=plist[count][12].replace(', ', '\n').replace("'", "").replace("[", "").replace("]", "")
+                      skill_count=COM_playing_styles.count('\n')+1
+
+                      embed2.add_field(name=f'\u200b\nCOM Playing Styles:', value=COM_playing_styles, inline=True)
+                      #skill_counter=additional_info[1].count('\n')+1 if additional_info[1].count('\n')!=10 else 10
+                      embed2.set_thumbnail(url=img_thumbnail)
+                      
+                      temp_img_name=get_pic_familiarity(plist[count][14], plist[count][13])
+                      file = discord.File(f"{temp_img_name}.png", filename=f"{temp_img_name}.png")
+                      embed2.set_image(url=f"attachment://{temp_img_name}.png")
+                     
+                      text1=await message.channel.send(file=file, embed=embed2)
+                      os.remove(f'{temp_img_name}.png')
                     
-                    text1=await message.channel.send(embed=embed2)
-                    await text1.add_reaction('◀️')
-                    await text1.add_reaction('▶️')
+                    if(count1==1):   await text1.add_reaction('◀️')
+                    if(count1==0):   await text1.add_reaction('▶️')
                     while time.time() < timeout_start1 + timeout1:
                       try:
                         text1= await text1.channel.fetch_message(text1.id)
@@ -491,19 +582,23 @@ async def on_message(message):
                             timeout_start1 = time.time()
                             count1=0
                             break
-                          elif(count_p1==1 and count1!=1): 
+                          elif(count_p1==1 and count1!=1):
+                           
                             await text1.delete()
                             timeout_start1 = time.time()
+                           
                             count1=1
                             break
                       except: break
-                  await text1.remove_reaction('◀️', client.get_user(text1.author.id))
-                  await text1.remove_reaction('▶️', client.get_user(text1.author.id))       
+                  if(count1==1):    await text1.remove_reaction('◀️', client.get_user(text1.author.id))
+                  elif(count1==0):  await text1.remove_reaction('▶️', client.get_user(text1.author.id))       
+                                              
                 else:
                   err=client.get_channel(int(879789398235947049))
-                  await err.send('<@694568372331085884> change {0.user}'.format(client))                                 
+                  await err.send('<@694568372331085884> change {0.user}'.format(client))
                 break
               if(count_n==1 and count!=0): 
+                
                 await text.delete()
                 timeout_start = time.time()
                 count-=1
@@ -511,15 +606,17 @@ async def on_message(message):
               elif(count_p==1 and count!=len(plist)-1): 
                 await text.delete()
                 timeout_start = time.time()
-                print('+++++++++++++')
+               
                 count+=1
                 break
               elif(count_nn==1): 
+                
                 await text.delete()
                 timeout_start = time.time()
                 count=0
                 break
               elif(count_pp==1): 
+                
                 await text.delete()
                 timeout_start = time.time()
                 count=len(plist)-1
@@ -527,10 +624,10 @@ async def on_message(message):
           except: break
       await text.delete()
       await message.reply(f'Oops, the bot timed out. Please respond within 20 seconds next time.')
-    else:
+    else: 
       err=client.get_channel(int(879789398235947049))
       await err.send('<@694568372331085884> change {0.user}'.format(client))
-      
+
   elif(message.content.startswith('-condition')): 
     name=message.content[11:]
     plist, flag_ban=text_search(name)
@@ -540,7 +637,7 @@ async def on_message(message):
   elif(message.content.startswith('-offensive') or message.content.startswith('-attacking')):
     name=message.content[11:]
     manager_info=get_manager(name.lower().replace(' ', '-').replace('.','-').replace('--', '-'))
-    name, [Attacking_Style,Build_Up,Attacking_Area,Positioning,Support_Range, NumbersInAttack, Defensive_Style,Containment_Area,Pressuring,Defensive_Line,Compactness, NumbersInDefense]=manager_info[1], manager_info[5:17]
+    name, [Attacking_Style,Build_Up,Attacking_Area,Positioning,Support_Range, NumbersInAttack, Defensive_Style,Containment_Area,Pressuring,Defensive_Line,Compactness, NumbersInDefense]=manager_info[1], manager_info[16:28]
     if(Build_Up!=None): 
       embedVar=discord.Embed(title=f'Offensive tactics of `{name}` are:\n', description=
       f'\u200b\nAttacking Style:                     {Attacking_Style}'
@@ -561,7 +658,7 @@ async def on_message(message):
   elif(message.content.startswith('-defensive')):
     name=message.content[11:]
     manager_info=get_manager(name.lower().replace(' ', '-').replace('.','-').replace('--', '-'))
-    name, [Attacking_Style,Build_Up,Attacking_Area,Positioning,Support_Range, NumbersInAttack, Defensive_Style,Containment_Area,Pressuring,Defensive_Line,Compactness, NumbersInDefense]=manager_info[1], manager_info[17:]
+    name, [Attacking_Style,Build_Up,Attacking_Area,Positioning,Support_Range, NumbersInAttack, Defensive_Style,Containment_Area,Pressuring,Defensive_Line,Compactness, NumbersInDefense]=manager_info[1], manager_info[28:39]
     if(Build_Up!=None): 
       embedVar=discord.Embed(title=f'Defensive tactics of `{name}` are:\n', description=
       f'\u200b\nAttacking Style:                     {Attacking_Style}'
@@ -574,17 +671,17 @@ async def on_message(message):
       f'\nContainment Area:               {Containment_Area}'
       f'\nPressuring:                              {Pressuring}'
       f'\nDefensive Line:                      {Defensive_Line}'
-      f'\nCompactness:                        {Compactness}'
-      f'\nNumbers in Defence:           {NumbersInDefense}', color=0xf1c40f)
+      f'\nCompactness:                        {Compactness}', color=0xf1c40f)
+      #f'\nNumbers in Defence:           {NumbersInDefense}', color=0xf1c40f)
       await message.channel.send(embed=embedVar)
 
   elif(message.content.startswith('-formation')):
     name=message.content[11:]
     if(name.replace(' ','').replace('.','').isalpha()):
-      print('test1')
+      
       manager_info=get_manager(name.lower().replace(' ', '-').replace('.','-').replace('--', '-'))
-      name, formation, skill= manager_info[1], manager_info[2].replace('--','-'), manager_info[3]
-      print(name, formation, skill)
+      name, formation, skill= manager_info[1], manager_info[2].replace('--','-'), manager_info[14]
+      
       if(formation!= None):
         await message.reply(f'Manager **{name}**({skill}) has formation **{formation}** this week')
     else: 
@@ -609,7 +706,7 @@ async def on_message(message):
   #elif(message.content.startswith('-position')):
    # text=message.content[10:].replace(' ','')
     #card, pos, playstyle, card_type, pos_type, playstyle_type=advanced_search(text)
-        #await message.reply('REDACTED🤬')
+       
     #embedVar=discord.Embed(title=f'{message.author.display_name}, here are your search results',
     #description=f'Card Type: {card_type}\nPosition: {pos_type}\nPlaystyle: {playstyle_type}', color=0xf1c40f)
     #await message.reply(embed=embedVar)
@@ -621,7 +718,7 @@ async def on_message(message):
   #elif(message.content.startswith('-playstyle')):
    # text=message.content[11:].replace(' ','')
     #card, pos, playstyle, card_type, pos_type, playstyle_type=advanced_search(text)
-        #await message.reply('REDACTED🤬')
+       
     #embedVar=discord.Embed(title=f'{message.author.display_name}, here are your search results',
     #description=f'Card Type: {card_type}\nPosition: {pos_type}\nPlaystyle: {playstyle_type}', color=0xf1c40f)
     #await message.reply(embed=embedVar)
@@ -834,7 +931,7 @@ async def on_message(message):
   elif(message.content.startswith('-id delete')):
     userid=str(message.author.id)
     try:
-      print(ref1.get().get(userid))
+      
       ref1.child(userid).delete()
       await message.reply(f'Your user ID has been deleted from my storage')
     except: await message.reply(f'Your ID was not stored with the bot in the first place')
@@ -895,15 +992,15 @@ async def on_message(message):
   
   
   elif(message.content.startswith('-pulliconic') or message.content.startswith('-pullim') or message.content.startswith('-pull im') or message.content.startswith('-pull iconic') or message.content.startswith('-pack iconic') or message.content.startswith('-packiconic') or message.content.startswith('-packim') or message.content.startswith('-pack im')):
-    IM_index=random.randint(1,143)
-    IM_Name=ref3.get()[IM_index].get('Name')
-    IM_Position=ref3.get()[IM_index].get('Position')
-    IM_Rating=ref3.get()[IM_index].get('Rating')
-    IM_Image=ref3.get()[IM_index].get('Image_URL')
-    IM_Link=ref3.get()[IM_index].get('Player_URL')
+    IM_index=random.randint(1,len(spamreader_IM))
+    IM_Name=spamreader_IM[IM_index][1]
+    IM_Position=spamreader_IM[IM_index][3]
+    IM_Rating=f'{spamreader_IM[IM_index][6]} - {spamreader_IM[IM_index][7]}'
+    IM_Image=f'https://novasoftwarestudio.online/peshub21/Images/Players/{spamreader_IM[IM_index][0]}_l.png'
+    #IM_Link=ref3.get()[IM_index].get('Player_URL')
     text=await message.reply(f'https://imgur.com/a/QfG4DbN')
     embedVar=discord.Embed(title=f'{message.author.display_name}, you packed:',
-    description=f'**{IM_Name}**\nPosition: **{IM_Position}**\nRating: **{IM_Rating}**\n**[Link]({IM_Link})**\n', color=0xf1c40f)
+    description=f'**{IM_Name}**\nPosition: **{IM_Position}**\nRating: **{IM_Rating}**\n', color=0xf1c40f)
     embedVar.set_image(url=IM_Image)
     embedVar.set_thumbnail(url=f'https://media.discordapp.net/attachments/723015304439136316/836309933317685319/iconic1.gif')
     await asyncio.sleep(7)
@@ -911,15 +1008,15 @@ async def on_message(message):
     await message.channel.send(embed=embedVar)
 
   elif(message.content.startswith('-pulllegend') or message.content.startswith('-pull legend') or message.content.startswith('-pack legend') or message.content.startswith('-packlegend')):
-    legend_index=random.randint(1,87)
-    legend_Name=ref4.get()[legend_index].get('Name')
-    legend_Position=ref4.get()[legend_index].get('Position')
-    legend_Rating=ref4.get()[legend_index].get('Rating')
-    legend_Image=ref4.get()[legend_index].get('Image_URL')
-    legend_Link=ref4.get()[legend_index].get('Player_URL')
+    legend_index=random.randint(1,len(spamreader_legend))
+    legend_Name=spamreader_legend[legend_index][1]
+    legend_Position=spamreader_legend[legend_index][3]
+    legend_Rating=f'{spamreader_legend[legend_index][6]} - {spamreader_legend[legend_index][7]}'
+    legend_Image=f'https://novasoftwarestudio.online/peshub21/Images/Players/{spamreader_legend[legend_index][0]}_l.png'
+    #legend_Link=ref4.get()[legend_index].get('Player_URL')
     text=await message.reply(f'https://imgur.com/a/vUBZap7')
     embedVar=discord.Embed(title=f'{message.author.display_name}, you packed:',
-    description=f'**{legend_Name}**\nPosition: **{legend_Position}**\nRating: **{legend_Rating}**\n**[Link]({legend_Link})**\n', color=0xf1c40f)
+    description=f'**{legend_Name}**\nPosition: **{legend_Position}**\nRating: **{legend_Rating}**\n', color=0xf1c40f)
     embedVar.set_image(url=legend_Image)
     embedVar.set_thumbnail(url=f'https://media.discordapp.net/attachments/788705918589468674/836131117861437450/legends_gif.gif?width=406&height=406')
     await asyncio.sleep(7)
@@ -927,70 +1024,28 @@ async def on_message(message):
     await message.channel.send(embed=embedVar)    
   
   elif(message.content.startswith('-pull') or message.content.startswith('-pack')):
-    index=random.randint(1,100)
-    if(index<13): 
-      packref=ref3
-      index=random.randint(1,143)
+    index=random.randint(1,len(spamreader))
+    Name=spamreader[index][1]
+    Position=spamreader[index][3]
+    Rating=f'{spamreader[index][6]} - {spamreader[index][7]}'
+    Image=f'https://novasoftwarestudio.online/peshub21/Images/Players/{spamreader[index][0]}'
+    #Link=packref.get()[index].get('Player_URL')
+    
+    if(spamreader[index][2]=='Iconic Moment'): 
       text=await message.reply(f'https://imgur.com/a/QfG4DbN')
       thumbnail=f'https://media.discordapp.net/attachments/723015304439136316/836309933317685319/iconic1.gif'
       t=7
-    elif(index<21): 
-      packref=ref4
-      index=random.randint(1,87)
+    elif(spamreader[index][2]=='Legend'): 
       text=await message.reply(f'https://imgur.com/a/vUBZap7')
       thumbnail=f'https://media.discordapp.net/attachments/788705918589468674/836131117861437450/legends_gif.gif?width=406&height=406'
       t=7
-    elif(index<36): 
-      index=random.randint(1,133)
-      if(index<65):       packref=ref_base1
-      elif(index<129):    
-        packref=ref_base2
-        index=str(index)
-      else:               
-        index=str(index)
-        packref=ref_base11
-      #index=str(index)  
-      text=await message.reply(f'https://imgur.com/a/AC0hCTj')
-      thumbnail=f'https://media.discordapp.net/attachments/733550157970538586/835481532336046130/black_ball_gif.gif'
-      t=5.8
-    elif(index<61):
-      index=random.randint(134,698)
-      if(index<293):      packref=ref_base3
-      elif(index<457):    
-        index=str(index)
-        packref=ref_base4
-      elif(index<621):    
-        index=str(index)
-        packref=ref_base5
-      elif(index<699):    
-        index=str(index)
-        packref=ref_base11
-      
-      text=await message.reply(f'https://imgur.com/a/AC0hCTj')
-      thumbnail=f'https://media.discordapp.net/attachments/733550157970538586/835481532336046130/black_ball_gif.gif'
-      t=5.8
     else: 
-      index=random.randint(699, 2801)
-      if(index<1019):     packref=ref_base6
-      elif(index<1417):   packref=ref_base7
-      elif(index<1815):   packref=ref_base8
-      elif(index<2213):   packref=ref_base9
-      elif(index<2611):   packref=ref_base10
-      elif(index<2802):   packref=ref_base11
-
-      index=str(index)
       text=await message.reply(f'https://imgur.com/a/AC0hCTj')
       thumbnail=f'https://media.discordapp.net/attachments/733550157970538586/835481532336046130/black_ball_gif.gif'
       t=5.8
-    print(index)
-    Name=packref.get()[index].get('Name')
-    Position=packref.get()[index].get('Position')
-    Rating=packref.get()[index].get('Rating')
-    Image=packref.get()[index].get('Image_URL')
-    Link=packref.get()[index].get('Player_URL')
     
     embedVar=discord.Embed(title=f'{message.author.display_name}, you packed:',
-    description=f'**{Name}**\nPosition: **{Position}**\nRating: **{Rating}**\n**[Link]({Link})**\n', color=0xf1c40f)
+    description=f'**{Name}**\nPosition: **{Position}**\nRating: **{Rating}**\n', color=0xf1c40f)
     embedVar.set_image(url=Image)
     embedVar.set_thumbnail(url=thumbnail)
     await asyncio.sleep(t)
@@ -1049,7 +1104,7 @@ async def on_message(message):
             elif(count_p==1 and count!=pagecount-1): 
               await text.delete()
               timeout_start = time.time()
-              print('+++++++++++++')
+             
               count+=1
               break
             elif(count_nn==1): 
